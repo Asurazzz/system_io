@@ -125,7 +125,7 @@ public class SelectorThread implements Runnable{
             // 非阻塞
             client.configureBlocking(false);
             // stg.nextSelector
-            stg.nextSelector(client);
+            stg.nextSelectorV2(client);
         } catch (IOException e) {
             e.printStackTrace();
         }

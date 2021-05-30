@@ -35,10 +35,30 @@ public class SelectorThreadGroup {
             server.configureBlocking(false);
             server.bind(new InetSocketAddress(port));
 
-            nextSelector(server);
+            nextSelectorV2(server);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void nextSelectorV2(Channel c) {
+        try {
+            if (c instanceof ServerSocketChannel) {
+                sts[0].lbq.put(c);
+                sts[0].selector.wakeup();
+            } else {
+                SelectorThread st = nextV2();
+                // 1.通过队列传递数据 消息
+                st.lbq.add(c);
+                // 2.通过打断阻塞，让对应的线程去自己在打断后完成注册selector
+                st.selector.wakeup();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
     }
 
     public void nextSelector(Channel c) {
@@ -66,6 +86,11 @@ public class SelectorThreadGroup {
         //轮询就会很尴尬，倾斜
         int index = xid.incrementAndGet() % sts.length;
         return sts[index];
+    }
 
+    private SelectorThread nextV2() {
+        // 应该先减后取模
+        int index = xid.incrementAndGet() % (sts.length - 1);
+        return sts[index + 1];
     }
 }
