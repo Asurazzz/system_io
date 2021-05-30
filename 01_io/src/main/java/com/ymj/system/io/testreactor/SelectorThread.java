@@ -24,9 +24,11 @@ public class SelectorThread implements Runnable{
     Selector selector = null;
 
     LinkedBlockingQueue<Channel> lbq = new LinkedBlockingQueue<>();
+    SelectorThreadGroup stg;
 
-    SelectorThread() {
+    SelectorThread(SelectorThreadGroup stg) {
         try {
+            this.stg = stg;
             selector = Selector.open();
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,7 +40,9 @@ public class SelectorThread implements Runnable{
         while (true) {
             try {
                 // 1.select
+                System.out.println(Thread.currentThread().getName()+"   :  before select...."+ selector.keys().size());
                 int nums = selector.select();
+                System.out.println(Thread.currentThread().getName()+"   :  after select...." + selector.keys().size());
                 // 2.处理selectkeys
                 if (nums > 0) {
                     Set<SelectionKey> keys = selector.selectedKeys();
@@ -57,7 +61,21 @@ public class SelectorThread implements Runnable{
                         }
                     }
                 }
-            } catch (IOException e) {
+                // 3.处理task
+                // 队列是堆中的对象，线程的栈是独立的，堆是共享的
+                if (!lbq.isEmpty()) {
+                    // 只有方法的逻辑，本地变量是线程隔离的
+                    Channel c = lbq.take();
+                    if (c instanceof ServerSocketChannel) {
+                        ServerSocketChannel server = (ServerSocketChannel) c;
+                        server.register(selector, SelectionKey.OP_ACCEPT);
+                    } else if(c instanceof  SocketChannel) {
+                        SocketChannel client = (SocketChannel) c;
+                        ByteBuffer buffer = ByteBuffer.allocate(4096);
+                        client.register(selector, SelectionKey.OP_READ, buffer);
+                    }
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -103,6 +121,7 @@ public class SelectorThread implements Runnable{
             // 非阻塞
             client.configureBlocking(false);
             // stg.nextSelector
+            stg.nextSelector(client);
         } catch (IOException e) {
             e.printStackTrace();
         }

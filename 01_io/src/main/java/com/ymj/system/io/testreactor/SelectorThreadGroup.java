@@ -24,7 +24,7 @@ public class SelectorThreadGroup {
         // num 线程数
         sts = new SelectorThread[num];
         for (int i = 0; i < num; i++) {
-            sts[i] = new SelectorThread();
+            sts[i] = new SelectorThread(this);
             new Thread(sts[i]).start();
         }
     }
