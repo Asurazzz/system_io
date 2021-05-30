@@ -40,9 +40,9 @@ public class SelectorThread implements Runnable{
         while (true) {
             try {
                 // 1.select
-                System.out.println(Thread.currentThread().getName()+"   :  before select...."+ selector.keys().size());
+                //System.out.println(Thread.currentThread().getName()+"   :  before select...."+ selector.keys().size());
                 int nums = selector.select();
-                System.out.println(Thread.currentThread().getName()+"   :  after select...." + selector.keys().size());
+                //System.out.println(Thread.currentThread().getName()+"   :  after select...." + selector.keys().size());
                 // 2.处理selectkeys
                 if (nums > 0) {
                     Set<SelectionKey> keys = selector.selectedKeys();
@@ -61,7 +61,7 @@ public class SelectorThread implements Runnable{
                         }
                     }
                 }
-                // 3.处理task
+                // 3.处理task ： listen client
                 // 队列是堆中的对象，线程的栈是独立的，堆是共享的
                 if (!lbq.isEmpty()) {
                     // 只有方法的逻辑，本地变量是线程隔离的
@@ -69,10 +69,14 @@ public class SelectorThread implements Runnable{
                     if (c instanceof ServerSocketChannel) {
                         ServerSocketChannel server = (ServerSocketChannel) c;
                         server.register(selector, SelectionKey.OP_ACCEPT);
+
+                        System.out.println(Thread.currentThread().getName() + " register listen");
                     } else if(c instanceof  SocketChannel) {
                         SocketChannel client = (SocketChannel) c;
                         ByteBuffer buffer = ByteBuffer.allocate(4096);
                         client.register(selector, SelectionKey.OP_READ, buffer);
+
+                        System.out.println(Thread.currentThread().getName() + " register client: " + client.getRemoteAddress());
                     }
                 }
             } catch (Exception e) {
