@@ -23,7 +23,7 @@ public class SelectorThread implements Runnable{
      */
     Selector selector = null;
 
-    LinkedBlockingQueue<Channel> lbq = null;
+    LinkedBlockingQueue<Channel> lbq = new LinkedBlockingQueue<>();
 
     SelectorThread() {
         try {
