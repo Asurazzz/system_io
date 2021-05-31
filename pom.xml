@@ -10,6 +10,9 @@
   <version>1.0-SNAPSHOT</version>
   <modules>
     <module>01_io</module>
+      <module>00_bio</module>
+    <module>02_nio</module>
+    <module>01_bio</module>
   </modules>
 
   <name>io</name>
