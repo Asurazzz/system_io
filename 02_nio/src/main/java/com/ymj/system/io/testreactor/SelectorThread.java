@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author : yemingjie
  * @date : 2021/5/29 13:48
  */
-public class SelectorThread implements Runnable{
+public class SelectorThread extends ThreadLocal<LinkedBlockingQueue<Channel>> implements Runnable{
 
 
 
@@ -23,8 +23,13 @@ public class SelectorThread implements Runnable{
      */
     Selector selector = null;
 
-    LinkedBlockingQueue<Channel> lbq = new LinkedBlockingQueue<>();
+    LinkedBlockingQueue<Channel> lbq = get();
     SelectorThreadGroup stg;
+
+    @Override
+    protected LinkedBlockingQueue<Channel> initialValue() {
+        return new LinkedBlockingQueue<>();
+    }
 
     SelectorThread(SelectorThreadGroup stg) {
         try {
