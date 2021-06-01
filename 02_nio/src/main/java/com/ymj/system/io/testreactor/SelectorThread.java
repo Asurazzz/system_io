@@ -125,9 +125,14 @@ public class SelectorThread implements Runnable{
             // 非阻塞
             client.configureBlocking(false);
             // stg.nextSelector
-            stg.nextSelectorV2(client);
+            //stg.nextSelectorV2(client);
+            stg.nextSelectorV3(client);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setWorker(SelectorThreadGroup stgWorker) {
+        this.stg = stgWorker;
     }
 }
