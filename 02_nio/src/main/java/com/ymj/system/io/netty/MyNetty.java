@@ -4,11 +4,14 @@ import io.netty.buffer.*;
 import io.netty.channel.*;
 import io.netty.channel.internal.ChannelUtils;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.CharsetUtil;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -93,7 +96,7 @@ public class MyNetty {
 
 
     /**
-     * 客户端
+     * 客户端  使用nc -l 192.168.195.132 9090 连接
      * @throws Exception
      */
     @Test
@@ -119,7 +122,54 @@ public class MyNetty {
         sync.channel().closeFuture().sync();
         System.out.println("client over...");
     }
+
+
+
+    @Test
+    public void serverModel() throws Exception{
+        NioEventLoopGroup thread = new NioEventLoopGroup(1);
+        NioServerSocketChannel server = new NioServerSocketChannel();
+        // 注册
+        thread.register(server);
+
+        ChannelPipeline pipeline = server.pipeline();
+        // accept接收客户端，并且注册到selector
+        pipeline.addLast(new MyAcceptHandler(thread, new MyInHandler()));
+
+        ChannelFuture bind = server.bind(new InetSocketAddress("192.168.195.132", 9090));
+
+        bind.channel().closeFuture().sync();
+        System.out.println("server close...");
+    }
 }
+
+class MyAcceptHandler extends ChannelInboundHandlerAdapter{
+    private final EventLoopGroup selector;
+    private final ChannelHandler handler;
+
+    public MyAcceptHandler(EventLoopGroup thread, ChannelHandler myInHandler) {
+        this.selector = thread;
+        this.handler = myInHandler;
+    }
+
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("server register......");
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        SocketChannel client = (SocketChannel) msg;
+        // 1.注册
+        selector.register(client);
+        // 2. 响应式
+        ChannelPipeline pipeline = client.pipeline();
+        pipeline.addLast(handler);
+    }
+}
+
+
+
 
 class MyInHandler extends ChannelInboundHandlerAdapter {
 
