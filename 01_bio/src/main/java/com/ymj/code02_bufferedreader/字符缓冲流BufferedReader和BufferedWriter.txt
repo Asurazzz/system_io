@@ -26,6 +26,8 @@ public class BufferedWriter extends Writer
    = new PrintWriter(new BufferedWriter(new FileWriter("foo.out")));
 (5)缓冲 PrintWriter 对文件的输出。如果没有缓冲，则每次调用 print() 方法会导致将字符转换为字节，然后立即写入到文件，而这是极其低效的。
 
+
+
 缓冲区的工作原理：
 1、使用了底层流对象从具体设备上获取数据，并将数据存储到缓冲区的数组内。
 2、通过缓冲区的read()方法从缓冲区获取具体的字符数据，这样就提高了效率。
