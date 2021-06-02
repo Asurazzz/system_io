@@ -1,0 +1,10 @@
+public class BufferedInputStream extends FilterInputStream
+
+BufferedInputStream 为另一个输入流添加一些功能，即缓冲输入以及支持 mark 和 reset 方法的能力。
+在创建 BufferedInputStream 时，会创建一个内部缓冲区数组。在读取或跳过流中的字节时，
+可根据需要从包含的输入流再次填充该内部缓冲区，一次填充多个字节。
+mark 操作记录输入流中的某个点，reset 操作使得在从包含的输入流中获取新字节之前，再次读取自最后一次 mark 操作后读取的所有字节。
+
+public class BufferedOutputStream extends FilterOutputStream
+
+该类实现缓冲的输出流。通过设置这种输出流，应用程序就可以将各个字节写入底层输出流中，而不必针对每次字节写入调用底层系统。
