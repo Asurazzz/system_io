@@ -1,0 +1,28 @@
+public class FileInputStream extends InputStream
+
+(1)FileInputStream 从文件系统中的某个文件中获得输入字节。哪些文件可用取决于主机环境。
+
+(2)FileInputStream 用于读取诸如图像数据之类的原始字节流。
+
+构造方法摘要
+FileInputStream(File file)
+          通过打开一个到实际文件的连接来创建一个 FileInputStream，该文件通过文件系统中的 File 对象 file 指定。
+FileInputStream(FileDescriptor fdObj)
+          通过使用文件描述符 fdObj 创建一个 FileInputStream，该文件描述符表示到文件系统中某个实际文件的现有连接。
+FileInputStream(String name)
+          通过打开一个到实际文件的连接来创建一个 FileInputStream，该文件通过文件系统中的路径名 name 指定。
+public class FileOutputStream extends OutputStream
+
+(1)文件输出流是用于将数据写入 File 或 FileDescriptor 的输出流。文件是否可用或能否可以被创建取决于基础平台。特别是某些平台一次只允许一个 FileOutputStream（或其他文件写入对象）打开文件进行写入。在这种情况下，如果所涉及的文件已经打开，则此类中的构造方法将失败。(2) FileOutputStream 用于写入诸如图像数据之类的原始字节的流。
+
+构造方法摘要
+FileOutputStream(File file)
+          创建一个向指定 File 对象表示的文件中写入数据的文件输出流。
+FileOutputStream(File file, boolean append)
+          创建一个向指定 File 对象表示的文件中写入数据的文件输出流。
+FileOutputStream(FileDescriptor fdObj)
+          创建一个向指定文件描述符处写入数据的输出文件流，该文件描述符表示一个到文件系统中的某个实际文件的现有连接。
+FileOutputStream(String name)
+          创建一个向具有指定名称的文件中写入数据的输出文件流。
+FileOutputStream(String name, boolean append)
+          创建一个向具有指定 name 的文件中写入数据的输出文件流。
