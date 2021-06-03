@@ -1,0 +1,12 @@
+public class OutputStreamWriter extends Writer
+
+（1）OutputStreamWriter 是字符流通向字节流的桥梁：可使用指定的 charset 将要写入流中的字符编码成字节。
+它使用的字符集可以由名称指定或显式给定，否则将接受平台默认的字符集。
+
+（2）每次调用 write() 方法都会导致在给定字符（或字符集）上调用编码转换器。
+在写入底层输出流之前，得到的这些字节将在缓冲区中累积。可以指定此缓冲区的大小，不过，默认的缓冲区对多数用途来说已足够大。
+注意，传递给 write() 方法的字符没有缓冲。
+
+（3）为了获得最高效率，可考虑将 OutputStreamWriter 包装到 BufferedWriter 中，以避免频繁调用转换器。例如：
+
+Writer out = new BufferedWriter(new OutputStreamWriter(System.out));//重要

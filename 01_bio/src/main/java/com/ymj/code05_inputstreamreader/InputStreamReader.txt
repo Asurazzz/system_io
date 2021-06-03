@@ -1,0 +1,18 @@
+InputStreamReader和OutputStreamWriter是字符和字节的桥梁，也可称之为字符转换流。原理：字节流+编码。
+
+FileReader和FileWriter作为子类，仅作为操作字符文件的便捷类存在。当操作的字符文件，使用的是默认编码表时可以不用父类，
+而直接使用子类完成操作，简化代码。
+
+一旦要指定其他编码时，不能使用子类，必须使用字符转换流。
+
+public class InputStreamReader extends Reader
+
+(1)InputStreamReader 是字节流通向字符流的桥梁：它使用指定的 charset 读取字节并将其解码为字符。
+    它使用的字符集可以由名称指定或显式给定，或者可以接受平台默认的字符集。
+
+(2)每次调用 InputStreamReader 中的一个 read() 方法都会导致从底层输入流读取一个或多个字节。
+    要启用从字节到字符的有效转换，可以提前从底层流读取更多的字节，使其超过满足当前读取操作所需的字节。
+
+(3)为了达到最高效率，可以考虑在 BufferedReader 内包装 InputStreamReader。例如：
+
+ BufferedReader in = new BufferedReader(new InputStreamReader(System.in))；//重要
