@@ -1,8 +1,9 @@
 package com.ymj.system.io.netty;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.*;
 import io.netty.channel.*;
-import io.netty.channel.internal.ChannelUtils;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -11,8 +12,6 @@ import io.netty.util.CharsetUtil;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -124,7 +123,10 @@ public class MyNetty {
     }
 
 
-
+    /**
+     * 可以使用windows 的telnet 127.0.0.1 9090 来测试
+     * @throws Exception
+     */
     @Test
     public void serverModel() throws Exception{
         NioEventLoopGroup thread = new NioEventLoopGroup(1);
@@ -137,11 +139,64 @@ public class MyNetty {
         //pipeline.addLast(new MyAcceptHandler(thread, new MyInHandler()));
         pipeline.addLast(new MyAcceptHandler(thread, new ChannelInit()));
 
-        ChannelFuture bind = server.bind(new InetSocketAddress("192.168.195.132", 9090));
+        ChannelFuture bind = server.bind(new InetSocketAddress("127.0.0.1", 9090));
 
-        bind.channel().closeFuture().sync();
+        bind.sync().channel().closeFuture().sync();
         System.out.println("server close...");
     }
+
+
+    /**
+     * netty客户端
+     * @throws Exception
+     */
+    @Test
+    public void nettyClient() throws Exception {
+        NioEventLoopGroup group = new NioEventLoopGroup(1);
+        Bootstrap bs = new Bootstrap();
+
+        ChannelFuture connect = bs.group(group)
+                .channel(NioSocketChannel.class)
+  //                        .handler(new ChannelInit())
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel channel) throws Exception {
+                        ChannelPipeline p = channel.pipeline();
+                        p.addLast(new MyInHandler());
+                    }
+                })
+                .connect(new InetSocketAddress("192.168.195.132", 9090));
+        Channel client = connect.sync().channel();
+
+        ByteBuf buf = Unpooled.copiedBuffer("hello server".getBytes(StandardCharsets.UTF_8));
+        ChannelFuture send = client.writeAndFlush(buf);
+        send.sync();
+
+        client.closeFuture().sync();
+    }
+
+
+    @Test
+    public void nettyServer() throws Exception {
+        NioEventLoopGroup group = new NioEventLoopGroup(1);
+        ServerBootstrap bs = new ServerBootstrap();
+
+        ChannelFuture bind = bs.group(group, group)
+                .channel(NioServerSocketChannel.class)
+                // .childHandler(new MyInHandler());
+                .childHandler(new ChannelInitializer<NioSocketChannel>() {
+                    @Override
+                    protected void initChannel(NioSocketChannel channel) throws Exception {
+                        ChannelPipeline pipeline = channel.pipeline();
+                        pipeline.addLast(new MyInHandler());
+                    }
+                })
+                .bind(new InetSocketAddress("127.0.0.1", 9999));
+
+        bind.sync().channel().closeFuture().sync();
+    }
+
+
 }
 
 class MyAcceptHandler extends ChannelInboundHandlerAdapter{
