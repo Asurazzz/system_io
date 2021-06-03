@@ -170,7 +170,8 @@ class MyAcceptHandler extends ChannelInboundHandlerAdapter{
 
 
 
-
+// 添加注解可以多个客户端共享
+//@ChannelHandler.Sharable
 class MyInHandler extends ChannelInboundHandlerAdapter {
 
     @Override
