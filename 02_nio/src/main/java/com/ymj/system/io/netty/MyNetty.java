@@ -134,7 +134,8 @@ public class MyNetty {
 
         ChannelPipeline pipeline = server.pipeline();
         // accept接收客户端，并且注册到selector
-        pipeline.addLast(new MyAcceptHandler(thread, new MyInHandler()));
+        //pipeline.addLast(new MyAcceptHandler(thread, new MyInHandler()));
+        pipeline.addLast(new MyAcceptHandler(thread, new ChannelInit()));
 
         ChannelFuture bind = server.bind(new InetSocketAddress("192.168.195.132", 9090));
 
@@ -160,11 +161,32 @@ class MyAcceptHandler extends ChannelInboundHandlerAdapter{
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         SocketChannel client = (SocketChannel) msg;
-        // 1.注册
-        selector.register(client);
+
         // 2. 响应式
         ChannelPipeline pipeline = client.pipeline();
+        // client:pipeline[ChannelInit]
         pipeline.addLast(handler);
+
+        // 1.注册
+        selector.register(client);
+
+    }
+}
+
+/**
+ * 为啥要有一个initHandler
+ *  因为不设计一个来调用MyInHandler而是直接调用MyInHandler的话，
+ *  MyInhandler就会变成共享的单例
+ */
+@ChannelHandler.Sharable
+class ChannelInit extends ChannelInboundHandlerAdapter {
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        Channel client = ctx.channel();
+        ChannelPipeline p = client.pipeline();
+        // 2.clinet::pipeline[ChannelInit,MyInHandler]
+        p.addLast(new MyInHandler());
+        ctx.pipeline().remove(this);
     }
 }
 
