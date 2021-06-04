@@ -1,0 +1,29 @@
+public class ObjectOutputStream extends OutputStream implements ObjectOutput, ObjectStreamConstants
+
+（1）ObjectOutputStream 将 Java 对象的基本数据类型和图形写入 OutputStream。只能使用 ObjectInputStream 读取（重构）对象。
+
+（2）只能将支持 java.io.Serializable 接口的对象写入流中。
+
+（3）writeObject 方法用于将对象写入流中。所有对象（包括 String 和数组）都可以通过 writeObject 写入。
+    可将多个对象或基元写入流中。必须使用与写入对象时相同的类型和顺序从相应 ObjectInputstream 中读回对象。
+
+构造方法：ObjectOutputStream(OutputStream out)  　　创建写入指定 OutputStream 的 ObjectOutputStream。
+
+public class ObjectInputStream extends InputStream implements ObjectInput, ObjectStreamConstants
+
+（1）ObjectInputStream 对以前使用 ObjectOutputStream 写入的基本数据和对象进行反序列化。
+
+（2）只有支持 java.io.Serializable 或 java.io.Externalizable 接口的对象才能从流读取。
+
+（3）readObject 方法用于从流读取对象。应该使用 Java 的安全强制转换来获取所需的类型。在 Java 中，
+    字符串和数组都是对象，所以在序列化期间将其视为对象。读取时，需要将其强制转换为期望的类型。
+
+
+序列化接口Serializable的作用：没有方法，不需要覆写，是一个标记接口为了启动一个序列化功能。
+唯一的作用就是给每一个需要序列化的类都分配一个序列版本号，这个版本号和类相关联。在序列化时，
+会将这个序列号也一同保存在文件中，在反序列化时会读取这个序列号和本类的序列号进行匹配，
+如果不匹配会抛出java.io.InvalidClassException.
+
+注意：静态数据不会被序列化，因为静态数据在方法区，不在对象里。
+
+或者使用transient关键字修饰，也不会序列化。
