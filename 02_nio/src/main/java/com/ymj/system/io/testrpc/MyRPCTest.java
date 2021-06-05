@@ -12,12 +12,11 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
+import java.util.Calendar;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
@@ -66,8 +65,28 @@ public class MyRPCTest {
 
         System.out.println("server started......");
 
-        Car car = proxyGet(Car.class);
-        car.run("hello");
+        int size = 20;
+        Thread[] threads = new Thread[size];
+        for (int i = 0; i < size; i++) {
+            threads[i] = new Thread(() -> {
+                Car car = proxyGet(Car.class);
+                car.run("hello");
+            });
+        }
+
+        for (Thread thread : threads) {
+            thread.start();
+        }
+
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+//        Car car = proxyGet(Car.class);
+//        car.run("hello");
 
 //        Fly fly = proxyGet(Fly.class);
 //        fly.fly("hello");
