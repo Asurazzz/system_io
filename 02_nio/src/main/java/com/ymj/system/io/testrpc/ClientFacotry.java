@@ -81,6 +81,11 @@ class ClientResponses extends ChannelInboundHandlerAdapter {
      * @param msg
      * @throws Exception
      */
+
+
+    public void channelRead1(ChannelHandlerContext ctx, Object msg) throws Exception {
+        Packmsg responseMsg = (Packmsg) msg;
+    }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf byteBuf = (ByteBuf) msg;
@@ -93,7 +98,7 @@ class ClientResponses extends ChannelInboundHandlerAdapter {
             System.out.println("client response @ id :" + header.getRequestID());
 
             // TODO
-            ResponseHandler.runCallBack(header.requestID);
+            //ResponseHandler.runCallBack(header.requestID);
 
 //            if (byteBuf.readableBytes() >= header.getDataLen()) {
 //                byte[] data = new byte[(int) header.getDataLen()];

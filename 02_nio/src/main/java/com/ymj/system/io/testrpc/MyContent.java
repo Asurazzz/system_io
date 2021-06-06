@@ -12,6 +12,15 @@ public class MyContent implements Serializable {
     String methodName;
     Class<?>[] parameterTypes;
     Object[] args;
+    String res;
+
+    public String getRes() {
+        return res;
+    }
+
+    public void setRes(String res) {
+        this.res = res;
+    }
 
     public String getName() {
         return name;

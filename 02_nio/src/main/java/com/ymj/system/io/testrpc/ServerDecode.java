@@ -34,9 +34,17 @@ public class ServerDecode extends ByteToMessageDecoder {
                 byteBuf.readBytes(data);
                 ByteArrayInputStream din = new ByteArrayInputStream(data);
                 ObjectInputStream doin = new ObjectInputStream(din);
-                MyContent content = (MyContent) doin.readObject();
-                System.out.println("server => content:" + content.getName());
-                list.add(new Packmsg(header, content));
+                if (header.getFlag() == 0x14141414) {
+                    MyContent content = (MyContent) doin.readObject();
+                    System.out.println("server => content:" + content.getName());
+                    list.add(new Packmsg(header, content));
+                } else if (header.getFlag() == 0x14141424){
+                    MyContent content = (MyContent) doin.readObject();
+                    System.out.println("server => content:" + content.getName());
+                    list.add(new Packmsg(header, content));
+                }
+
+
             } else {
                 // 字数不够的时候打印还剩余多少
                 // 进入这一步说明数据被截断了
