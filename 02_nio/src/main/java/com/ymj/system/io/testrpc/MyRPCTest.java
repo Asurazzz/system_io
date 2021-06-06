@@ -16,11 +16,17 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
-import java.util.Calendar;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ *
+ * 需求：写一个RPC
+ *  来回通信，连接数量，拆包
+ *  动态代理，序列化，协议封装
+ *  连接池
+ *  rpc就像调用本地方法一样去调用远程方法，面向java中的面向interface开发
  * @author : yemingjie
  * @date : 2021/6/5 9:08
  */
@@ -40,6 +46,8 @@ public class MyRPCTest {
                     protected void initChannel(NioSocketChannel ch) throws Exception {
                         System.out.println("server accept client port:" + ch.remoteAddress().getPort());
                         ChannelPipeline pipeline = ch.pipeline();
+                        // 先解码
+                        pipeline.addLast(new ServerDecode());
                         pipeline.addLast(new ServerRequestHandler());
                     }
                 }).bind(new InetSocketAddress("localhost", 9090));
@@ -65,12 +73,17 @@ public class MyRPCTest {
 
         System.out.println("server started......");
 
+
+        /**
+         * 多并发通过一个连接发送后，服务端解析bytebuf  转对象的过程出错
+         */
+        AtomicInteger num = new AtomicInteger(0);
         int size = 20;
         Thread[] threads = new Thread[size];
         for (int i = 0; i < size; i++) {
             threads[i] = new Thread(() -> {
                 Car car = proxyGet(Car.class);
-                car.run("hello");
+                car.run("hello" + num.incrementAndGet());
             });
         }
 
