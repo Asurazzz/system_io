@@ -2,6 +2,8 @@ package com.ymj.code12_file;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * @Classname FileDemo3
@@ -20,9 +22,7 @@ public class FileDemo3 {
 //                    return pathname.isDirectory();
 //                }
 //            });
-            for (File f : list) {
-                System.out.println(f);
-            }
+            Arrays.stream(list).forEach(System.out::println);
         }
     }
 }
