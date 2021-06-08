@@ -1,0 +1,24 @@
+File: 文件和目录路径名的抽象表示形式，File类的实例是不可改变的
+
+ * File类的构造方法：
+ *             File(String pathname) 将指定的路径名转换成一个File对象
+ *             File(String parent,String child) 根据指定的父路径和文件路径创建对象
+ *             File(File parent,String child)
+ * File类常用功能：
+ *             创建：boolean createNewFile()：当指定文件(或文件夹)不存在时创建文件并返回true，否则返回false，路径不存在则抛出异常
+ *                 boolean mkdir()  ：当指定文件（或文件夹）不存在时创建文件夹并返回true，否则返回false
+ *                 boolean mkdirs() :创建指定文件夹，所在文件夹目录不存在时，则顺道一块创建　　　　　　　　
+ *             删除：boolean delete()：删除文件
+　　　　　　　　　　　　注意：要删除一个目录，需要先删除这个目录下的所有子文件和子目录
+ *             获取：File getAbsoluteFile()
+ *                 File getParentFile()
+ *                 String getAbsolutePath()
+ *                 String getParent()
+ *                 String getPath()
+ *                 long lastModified()
+*             判断： boolean exists();
+ *                 boolean isAbsolute()
+ *                 boolean isDirectory()
+ *                 boolean isFile()
+ *                 boolean isHidden()
+ *             修改：boolean renameTo(File dest)： 将当前File对象所指向的路径修改为指定File所指的路径 （修改文件名称）

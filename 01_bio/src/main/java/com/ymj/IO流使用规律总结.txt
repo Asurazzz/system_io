@@ -1,0 +1,42 @@
+1、IO流分类：
+　　根据流向分：
+　　　　输入流　　读取数据　　FileReader　　Reader
+　　　　输出流　　写出数据　　FileWriter　　  Writer
+　　根据数据类型分:
+　　　　字节流(直接写到文件中)：
+　　　　　　　字节输入流　　读取数据　　InputStream（抽象类）
+　　　　　　　　　　　　　　　　　　　　FileInputStream ,BufferedInputStream,
+　　　　　　　字节输出流　　写出数据　　OutputStream（抽象类）
+　　　　　　　　　　　　　　　　　　　　FileOutputStream ,BufferedOutputStream,
+　　　　字符流（首先写到缓冲区）：　　　　　
+　　　　　　　字符输入流　　读取数据　　Reader
+　　　　　　　字符输出流　　写出数据　　Writer
+　字符流能实现的功能字节流都能实现，反之不一定。如：图片，视频等二进制文件，只能使用字节流读写。
+（1）明确要操作的数据是数据源还是数据目的(要读还是要写)
+　　　　　　源：InputStream　　Reader
+　　　　　　目的：OutputStream　　Writer
+（2）明确要操作的设备上的数据是字节还是文本
+　　　　　　源：
+　　　　　　　　　　字节：InputStream
+　　　　　　　　　　文本：Reader
+　　　　　　目的：
+　　　　　　　　　　字节：OutputStream
+　　　　　　　　　　文本：Writer
+（3）明确数据所在的具体设备
+　　　　　　源设备：
+　　　　　　　　硬盘：文件 File开头
+　　　　　　　　内存：数组，字符串
+　　　　　　　　键盘：System.in
+　　　　　　　　网络：Socket
+　　　　　　目的设备：
+　　　　　　　　硬盘：文件 File开头
+　　　　　　　　内存：数组，字符串
+　　　　　　　　屏幕：System.out
+　　　　　　　　网络：Socket
+（4）明确是否需要额外功能？
+　　　　需要转换——转换流 InputStreamReader OutputStreamWriter
+　　　　需要高效——缓冲流Bufferedxxx
+　　　　多个源——序列流 SequenceInputStream
+　　　　对象序列化——ObjectInputStream,ObjectOutputStream
+　　　　保证数据的输出形式——打印流PrintStream Printwriter
+　　　　操作基本数据，保证字节原样性——DataOutputStream,DataInputStream
