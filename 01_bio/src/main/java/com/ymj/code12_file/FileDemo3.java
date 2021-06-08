@@ -13,12 +13,13 @@ public class FileDemo3 {
     public static void main(String[] args) {
         File file = new File("F:\\");
         if (file.isDirectory()) {
-            File[] list = file.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.isDirectory();
-                }
-            });
+            File[] list = file.listFiles((pathname) -> pathname.isDirectory());
+//            File[] list = file.listFiles(new FileFilter() {
+//                @Override
+//                public boolean accept(File pathname) {
+//                    return pathname.isDirectory();
+//                }
+//            });
             for (File f : list) {
                 System.out.println(f);
             }
